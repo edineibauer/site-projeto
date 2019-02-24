@@ -1,0 +1,25 @@
+{{#tarefas}}
+    <div class="col padding-medium lista-task">
+        <button class="btn-floating theme right opacity hover-opacity-off hover-shadow" onclick="desenvolvimento({{id}})">
+            <i class="material-icons left padding-right">play_arrow</i>
+        </button>
+        <div class="right padding-medium">
+            {{#concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Atividade Concluída">check_box</i>{{/concluido}}
+            {{^concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Atividade Inacabada">check_box_outline_blank</i>{{/concluido}}
+        </div>
+        <div class="right padding-medium">
+            {{#tempo_utilizado}}Utilizado: {{tempo_utilizado}}H{{/tempo_utilizado}}
+            {{^tempo_utilizado}}não iniciou{{/tempo_utilizado}}
+        </div>
+        <div class="right padding-medium">
+            Estimativa: {{tempo_estimado_em_horas}}H
+        </div>
+
+        <div class="left padding-8" style="cursor: help">
+            <i class="material-icons left color-text-gray opacity" title="{{#descricao}}{{descricao}}{{/descricao}}{{^descricao}}Sem Informação{{/descricao}}">info</i>
+        </div>
+        <div class="left padding-medium">
+            {{nome}}
+        </div>
+    </div>
+{{/tarefas}}

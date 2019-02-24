@@ -1,0 +1,14 @@
+{
+  "1": {
+    "icon": "timer",
+    "title": "Relógio",
+    "link": false,
+    "table": false,
+    "page": true,
+    "form": false,
+    "lib": "site-projeto",
+    "file": "inc/relogio",
+    "entity": "",
+    "indice": 1
+  }
+}
