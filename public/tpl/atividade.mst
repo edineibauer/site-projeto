@@ -1,9 +1,28 @@
 <div class="col s12 m8">
-    <label>
-        <span class="col align-left">O que você irá fazer?<sup class="color-text-red"><b>*</b></sup></span>
-        <input type="text" class="font-xxlarge color-text-gray-dark" rel="{{tarefa.id}}" id="atividade-titulo"/>
-    </label>
-    <textarea class="col color-text-gray" rows="5" id="atividade-descricao" placeholder="descrição..."></textarea>
+    <div class="col padding-bottom margin-bottom">
+        <button class="btn-floating theme opacity hover-opacity-off hover-shadow"
+                onclick="desenvolvimento({{projeto.id}})">
+            <i class="material-icons left">keyboard_arrow_left</i>
+        </button>
+
+        {{^tarefa.concluido}}
+            <div class="left padding-tiny padding-left">
+                <button class="btn color-white hover-shadow radius opacity hover-opacity-off"
+                        onclick="concluirTarefa({{projeto.id}}, '{{tarefa.id}}')">
+                    <i class="material-icons left padding-right">done</i>
+                    Concluir Tarefa
+                </button>
+            </div>
+        {{/tarefa.concluido}}
+
+    </div>
+    {{^tarefa.concluido}}
+        <label>
+            <span class="col align-left">O que você irá fazer?<sup class="color-text-red"><b>*</b></sup></span>
+            <input type="text" class="font-xxlarge color-text-gray-dark" rel="{{tarefa.id}}" id="atividade-titulo"/>
+        </label>
+        <textarea class="col color-text-gray" rows="5" id="atividade-descricao" placeholder="descrição..."></textarea>
+    {{/tarefa.concluido}}
 
     <div class="col padding-top" id="atividades"></div>
 </div>
@@ -12,27 +31,36 @@
         <h3 class="padding-tiny col">Tarefa <b class="upper">{{tarefa.nome}}</b></h3>
         <small class="col padding-small">{{projeto.projeto}}</small>
     </div>
-    <div class="col padding-8 padding-bottom upper color-text-gray-dark">
-        <span class="left font-xxxlarge">
-            <span id="hora">00</span>:<span id="minuto">00</span>:<span id="segundo">00</span>
-        </span>
-    </div>
-    <div class="col padding-24">
-        <button style="transform: scale(2);margin-right: 35px;margin-left: 25px;"
-                class="btn-floating theme left opacity hover-opacity-off hover-shadow"
-                onclick="tarefaStart({{projeto.id}}, '{{tarefa.id}}')">
-            <i class="material-icons left padding-right">play_arrow</i>
-        </button>
-        <button class="btn-floating theme left opacity hover-opacity-off hover-shadow"
-                onclick="tarefaPause({{projeto.id}}, '{{tarefa.id}}')">
-            <i class="material-icons left padding-right">pause</i>
-        </button>
-        <button class="btn-floating theme left opacity hover-opacity-off hover-shadow"
-                onclick="tarefaConcluida({{projeto.id}}, '{{tarefa.id}}')">
-            <i class="material-icons left padding-right">stop</i>
-        </button>
-    </div>
-    <div class="col color-text-gray padding-16">
-        <span class="left" id="time-start"></span>
-    </div>
+    {{#tarefa.concluido}}
+        <div class="col color-text-gray padding-16">
+            <i class="material-icons left padding-right color-text-green">done</i>
+            Tarefa Concluída
+        </div>
+    {{/tarefa.concluido}}
+    {{^tarefa.concluido}}
+        <div class="col padding-8 padding-bottom upper color-text-gray-dark">
+            <span class="left font-xxxlarge">
+                <span id="hora">00</span>:<span id="minuto">00</span>:<span id="segundo">00</span>
+            </span>
+        </div>
+        <div class="col padding-24">
+            <button style="transform: scale(2);margin-right: 35px;margin-left: 25px;"
+                    class="btn-floating theme left opacity hover-opacity-off hover-shadow"
+                    onclick="atividadeStart({{projeto.id}}, '{{tarefa.id}}')">
+                <i class="material-icons left padding-right">play_arrow</i>
+            </button>
+            <button class="btn-floating theme left opacity hover-opacity-off hover-shadow"
+                    onclick="atividadePause({{projeto.id}}, '{{tarefa.id}}')">
+                <i class="material-icons left padding-right">pause</i>
+            </button>
+            <button class="btn-floating theme left opacity hover-opacity-off hover-shadow"
+                    onclick="atividadeConcluida({{projeto.id}}, '{{tarefa.id}}')">
+                <i class="material-icons left padding-right">stop</i>
+            </button>
+        </div>
+
+        <div class="col color-text-gray padding-16">
+            <span class="left" id="time-start"></span>
+        </div>
+    {{/tarefa.concluido}}
 </div>

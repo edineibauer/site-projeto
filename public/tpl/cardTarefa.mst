@@ -1,10 +1,17 @@
+<div class="col padding-12">
+    <div class="col z-depth-2 color-white padding-medium">
+        <span class="col s12 m6"><b>{{statics.concluido}}%</b> das {{statics.tarefas}} tarefas concluídas</span>
+        <span class="col s12 m6 align-right"><b>{{statics.desenvolvido}} min </b> das {{statics.estimativa}} min Estimados</span>
+    </div>
+</div>
+
 {{#tarefas}}
-    <div class="col padding-medium lista-task">
-        <button class="btn-floating theme right opacity hover-opacity-off hover-shadow" onclick="tarefa({{idParent}}, '{{id}}')">
+    <div class="col padding-medium lista-task z-depth-2">
+        <button class="btn-floating theme right opacity hover-opacity-off hover-shadow" onclick="openTarefa({{idParent}}, '{{id}}')">
             <i class="material-icons left padding-right">play_arrow</i>
         </button>
         <div class="right padding-medium">
-            {{#concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Concluído">check_box</i>{{/concluido}}
+            {{#concluido}}<i class="material-icons left color-text-green" style="cursor: default" title="Concluído">check_box</i>{{/concluido}}
             {{^concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Inacabado">check_box_outline_blank</i>{{/concluido}}
         </div>
         <div class="right padding-medium">
@@ -23,12 +30,12 @@
         </div>
     </div>
     {{#sub_tarefas}}
-        <div class="col padding-medium lista-task margin-left">
-            <button class="btn-floating theme right opacity hover-opacity-off hover-shadow" onclick="tarefa({{idParent}}, '{{id}}')">
+        <div class="col padding-medium lista-task margin-left z-depth-2">
+            <button class="btn-floating theme right opacity hover-opacity-off hover-shadow" onclick="openTarefa({{idParent}}, '{{id}}')">
                 <i class="material-icons left padding-right">play_arrow</i>
             </button>
             <div class="right padding-medium">
-                {{#concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Concluído">check_box</i>{{/concluido}}
+                {{#concluido}}<i class="material-icons left color-text-green" style="cursor: default" title="Concluído">check_box</i>{{/concluido}}
                 {{^concluido}}<i class="material-icons left color-text-gray" style="cursor: default" title="Inacabado">check_box_outline_blank</i>{{/concluido}}
             </div>
             <div class="right padding-medium">

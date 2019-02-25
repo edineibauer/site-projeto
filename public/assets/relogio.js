@@ -25,12 +25,38 @@ function desenvolvimento(id) {
     Promise.all([data, tpl]).then(r => {
         data = r[0];
         tpl = r[1];
+        let totalTarefas = 0;
+        let totalConcluido = 0;
+        let total = 0;
+        let desenvolvido = 0;
 
         $.each(data.tarefas, function (i, e) {
             e.concluido = e.concluido === "1" || e.concluido === 1 || e.concluido === true ? true : false;
+            totalTarefas++;
+            if(e.tempo_estimado_em_horas !== "" && e.tempo_estimado_em_horas > 0)
+                total += parseInt(e.tempo_estimado_em_horas);
+            if(e.tempo_utilizado_em_minutos !== "" && e.tempo_utilizado_em_minutos > 0)
+                desenvolvido += parseInt(e.tempo_utilizado_em_minutos);
+            if(e.concluido)
+                totalConcluido ++;
+            if (e.sub_tarefas.length) {
+                $.each(e.sub_tarefas, function (ii, f) {
+                    f.concluido = f.concluido === "1" || f.concluido === 1 || f.concluido === true ? true : false;
+                    totalTarefas ++;
+                    if(f.tempo_estimado_em_horas !== "" && f.tempo_estimado_em_horas > 0)
+                        total += parseInt(f.tempo_estimado_em_horas);
+                    if(f.tempo_utilizado_em_minutos !== "" && f.tempo_utilizado_em_minutos > 0)
+                        desenvolvido += parseInt(f.tempo_utilizado_em_minutos);
+                    if(f.concluido)
+                        totalConcluido ++;
+                });
+            }
         });
 
-        $("#desenvolvimentos").html(Mustache.render(tpl.cardTarefa, {tarefas: data.tarefas, idParent: id}));
+        totalConcluido = (totalConcluido * 100) / totalTarefas;
+        total = total * 60;
+
+        $("#desenvolvimentos").html(Mustache.render(tpl.cardTarefa, {tarefas: data.tarefas, idParent: id, statics: {tarefas: totalTarefas, concluido: totalConcluido, estimativa: total, desenvolvido: desenvolvido}}));
     });
 }
 
@@ -81,7 +107,7 @@ function readAtividades(idDev, id) {
     });
 }
 
-function tarefa(idDev, id) {
+function openTarefa(idDev, id) {
     let tpl = dbLocal.exeRead("__template", 1);
     let data = db.exeRead("desenvolvimento", idDev);
 
@@ -104,6 +130,8 @@ function tarefa(idDev, id) {
         });
 
         if (typeof tarefa.id !== "undefined") {
+            tarefa.concluido = tarefa.concluido === "1" || tarefa.concluido === 1 || tarefa.concluido === true ? true : false;
+            console.log(data);
             $("#desenvolvimentos").html(Mustache.render(tpl.atividade, {projeto: data, tarefa: tarefa}));
             restoreData();
             readAtividades(idDev, id);
@@ -116,7 +144,6 @@ function restoreData() {
     if(task !== null) {
         $("#atividade-titulo").val(task.titulo_da_atividade);
         $("#atividade-descricao").val(task.descricao);
-        console.log(task);
         let tt = task.hora_de_inicio.split(" ");
         tt = tt[1].split(":");
         $("#time-start").html("iniciou as " + zeroEsquerda(tt[0]) + ":" + zeroEsquerda(tt[1]));
@@ -126,7 +153,7 @@ function restoreData() {
     }
 }
 
-function tarefaStart(idParent, id) {
+function atividadeStart(idParent, id) {
     if (task !== null) {
         tempo();
     } else {
@@ -146,10 +173,8 @@ function createAtividade(id) {
         var day = zeroEsquerda(now.getDate());
         var month = zeroEsquerda(now.getMonth() + 1);
         atividade.hora_de_inicio = now.getFullYear() + "-" + month + "-" + day + " " + zeroEsquerda(now.getHours()) + ":" + zeroEsquerda(now.getMinutes());
-        console.log(atividade);
         db.exeCreate("atividade", atividade).then(at => {
             task = Object.assign({}, at[0]);
-            console.log(task);
             delete (task.db_action);
             delete (task.id_old);
             $("#time-start").html("iniciou as " + zeroEsquerda(now.getHours()) + ":" + zeroEsquerda(now.getMinutes()));
@@ -161,11 +186,11 @@ function createAtividade(id) {
     }
 }
 
-function tarefaPause(idParent, id) {
+function atividadePause(idParent, id) {
     parar();
 }
 
-function tarefaConcluida(idDev, id) {
+function atividadeConcluida(idDev, id) {
     if(task !== null) {
         if (confirm("Finalizar Atividade?")) {
             $("#hora, #minuto, #segundo").html("00");
@@ -182,10 +207,44 @@ function tarefaConcluida(idDev, id) {
                 s = 1;
                 m = 0;
                 h = 0;
+                $("#hora").html("00");
+                $("#segundo").html("00");
+                $("#minuto").html("00");
+                $("#atividade-titulo").focus();
                 readAtividades(idDev, id);
                 task = null;
             });
         }
+    }
+}
+
+function concluirTarefa(idDev, id) {
+    if (confirm("Encerrar Tarefa?")) {
+        db.exeRead("desenvolvimento", idDev).then(data => {
+            let tarefa = {};
+            $.each(data.tarefas, function (i, e) {
+                if (e.id == id) {
+                    tarefa = e;
+                } else if (typeof e.sub_tarefas === "object" && e.sub_tarefas.length) {
+                    $.each(e.sub_tarefas, function (o, f) {
+                        if (f.id == id)
+                            tarefa = f;
+                    })
+                }
+
+                if (typeof tarefa.id !== "undefined")
+                    return !1;
+            });
+
+            if (typeof tarefa.id !== "undefined") {
+                tarefa.concluido = "1";
+                console.log(Object.assign({}, data));
+
+                db.exeCreate("desenvolvimento", data).then(() => {
+                    openTarefa(idDev, id);
+                });
+            }
+        });
     }
 }
 
