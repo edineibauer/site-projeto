@@ -131,7 +131,6 @@ function openTarefa(idDev, id) {
 
         if (typeof tarefa.id !== "undefined") {
             tarefa.concluido = tarefa.concluido === "1" || tarefa.concluido === 1 || tarefa.concluido === true ? true : false;
-            console.log(data);
             $("#desenvolvimentos").html(Mustache.render(tpl.atividade, {projeto: data, tarefa: tarefa}));
             restoreData();
             readAtividades(idDev, id);
@@ -238,8 +237,6 @@ function concluirTarefa(idDev, id) {
 
             if (typeof tarefa.id !== "undefined") {
                 tarefa.concluido = "1";
-                console.log(Object.assign({}, data));
-
                 db.exeCreate("desenvolvimento", data).then(() => {
                     openTarefa(idDev, id);
                 });

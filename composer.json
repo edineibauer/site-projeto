@@ -1,0 +1,16 @@
+{
+    "name": "ueb/projetos",
+    "description": "Gerenciador de projetos e tempo.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Edinei J. Bauer",
+            "email": "edineibauer@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "ueb/dashboard": "^1.0"
+    }
+}
