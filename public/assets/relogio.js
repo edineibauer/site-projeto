@@ -53,7 +53,7 @@ function desenvolvimento(id) {
             }
         });
 
-        totalConcluido = (totalConcluido * 100) / totalTarefas;
+        totalConcluido = parseFloat((totalConcluido * 100) / totalTarefas).toFixed(1);
         total = total * 60;
 
         $("#desenvolvimentos").html(Mustache.render(tpl.cardTarefa, {tarefas: data.tarefas, idParent: id, statics: {tarefas: totalTarefas, concluido: totalConcluido, estimativa: total, desenvolvido: desenvolvido}}));
@@ -201,6 +201,8 @@ function atividadeConcluida(idDev, id) {
             var month = zeroEsquerda(now.getMonth() + 1);
             task.hora_de_termino = now.getFullYear() + "-" + month + "-" + day + " " + now.getHours() + ":" + now.getMinutes();
             task.minutos_de_atividade = (s > 30 ? 1 : 0) + m + (h * 60);
+            task.titulo_da_atividade = $("#atividade-titulo").val();
+            task.descricao = $("#atividade-descricao").val();
             db.exeCreate("atividade", task).then(() => {
                 parar();
                 s = 1;
