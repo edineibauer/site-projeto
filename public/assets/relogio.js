@@ -1,4 +1,10 @@
-var task = null;
+if(typeof task === "undefined") {
+    var task = null;
+    var intervalo = null;
+    var s = 1;
+    var m = 0;
+    var h = 0;
+}
 
 function readProjetos() {
     let tpl = dbLocal.exeRead("__template", 1);
@@ -10,14 +16,6 @@ function readProjetos() {
         else
             $("#desenvolvimentos-header").html("<h2>Nenhum Projeto</h2>");
     });
-}
-
-function novoDesenvolvimento() {
-
-}
-
-function novaTarefa() {
-
 }
 
 function desenvolvimento(id) {
@@ -107,10 +105,25 @@ function tarefa(idDev, id) {
 
         if (typeof tarefa.id !== "undefined") {
             $("#desenvolvimentos").html(Mustache.render(tpl.atividade, {projeto: data, tarefa: tarefa}));
+            restoreData();
             readAtividades(idDev, id);
             $("#atividade-titulo").focus();
         }
     });
+}
+
+function restoreData() {
+    if(task !== null) {
+        $("#atividade-titulo").val(task.titulo_da_atividade);
+        $("#atividade-descricao").val(task.descricao);
+        console.log(task);
+        let tt = task.hora_de_inicio.split(" ");
+        tt = tt[1].split(":");
+        $("#time-start").html("iniciou as " + zeroEsquerda(tt[0]) + ":" + zeroEsquerda(tt[1]));
+        $("#hora").html(zeroEsquerda(h));
+        $("#segundo").html(zeroEsquerda(s));
+        $("#minuto").html(zeroEsquerda(m));
+    }
 }
 
 function tarefaStart(idParent, id) {
@@ -132,9 +145,11 @@ function createAtividade(id) {
         var now = new Date();
         var day = zeroEsquerda(now.getDate());
         var month = zeroEsquerda(now.getMonth() + 1);
-        atividade.hora_de_inicio = now.getFullYear() + "-" + month + "-" + day + " " + now.getHours() + ":" + now.getMinutes();
+        atividade.hora_de_inicio = now.getFullYear() + "-" + month + "-" + day + " " + zeroEsquerda(now.getHours()) + ":" + zeroEsquerda(now.getMinutes());
+        console.log(atividade);
         db.exeCreate("atividade", atividade).then(at => {
             task = Object.assign({}, at[0]);
+            console.log(task);
             delete (task.db_action);
             delete (task.id_old);
             $("#time-start").html("iniciou as " + zeroEsquerda(now.getHours()) + ":" + zeroEsquerda(now.getMinutes()));
@@ -151,31 +166,28 @@ function tarefaPause(idParent, id) {
 }
 
 function tarefaConcluida(idDev, id) {
-    if (confirm("Finalizar Atividade?")) {
-        $("#hora, #minuto, #segundo").html("00");
-        $("#atividade-titulo, #atividade-descricao").val("");
-        $("#time-start").html("");
+    if(task !== null) {
+        if (confirm("Finalizar Atividade?")) {
+            $("#hora, #minuto, #segundo").html("00");
+            $("#atividade-titulo, #atividade-descricao").val("");
+            $("#time-start").html("");
 
-        var now = new Date();
-        var day = zeroEsquerda(now.getDate());
-        var month = zeroEsquerda(now.getMonth() + 1);
-        task.hora_de_termino = now.getFullYear() + "-" + month + "-" + day + " " + now.getHours() + ":" + now.getMinutes();
-        task.minutos_de_atividade = (s > 30 ? 1 : 0) + m + (h * 60);
-        db.exeCreate("atividade", task).then(() => {
-            parar();
-            s = 1;
-            m = 0;
-            h = 0;
-            readAtividades(idDev, id);
-            task = null;
-        });
+            var now = new Date();
+            var day = zeroEsquerda(now.getDate());
+            var month = zeroEsquerda(now.getMonth() + 1);
+            task.hora_de_termino = now.getFullYear() + "-" + month + "-" + day + " " + now.getHours() + ":" + now.getMinutes();
+            task.minutos_de_atividade = (s > 30 ? 1 : 0) + m + (h * 60);
+            db.exeCreate("atividade", task).then(() => {
+                parar();
+                s = 1;
+                m = 0;
+                h = 0;
+                readAtividades(idDev, id);
+                task = null;
+            });
+        }
     }
 }
-
-var intervalo = null;
-var s = 1;
-var m = 0;
-var h = 0;
 
 function tempo() {
     if (!intervalo) {
