@@ -1,0 +1,16 @@
+<div class="col padding-small">
+    <div class="z-depth-2 align-center color-white left padding-medium" style="cursor: default">
+        total de <b>{{total}} minutos</b> nessa tarefa
+    </div>
+</div>
+
+{{#data}}
+    <div class="left padding-small">
+        <div class="z-depth-2 hover-shadow align-center color-white pointer left padding-medium" onclick="openAtividade({{id}})">
+            <span class="col">
+                {{titulo_da_atividade}}
+            </span>
+            <small class="col padding-4">{{minutos_de_atividade}} minutos</small>
+        </div>
+    </div>
+{{/data}}

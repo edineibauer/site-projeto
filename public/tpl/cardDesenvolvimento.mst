@@ -1,4 +1,9 @@
-<div class="z-depth-2 color-white pointer left padding-large upper font-xlarge" onclick="desenvolvimento({{id}})">
-    <i class="material-icons left padding-right font-xxlarge">map</i>
-    {{projeto}}
-</div>
+{{#data}}
+    <div class="col padding-small">
+        <div class="z-depth-2 color-white pointer left padding-large upper font-xlarge"
+             onclick="desenvolvimento({{id}})">
+            <i class="material-icons left padding-right font-xxlarge">map</i>
+            {{projeto}}
+        </div>
+    </div>
+{{/data}}
